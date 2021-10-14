@@ -5,13 +5,15 @@ import java.util.Objects;
 import state.EstadoPersonaje;
 import state.PersonajeNormal;
 
-public class Personaje implements Comparable<Personaje> {
+public class Personaje {
 	
 	private Punto2D posicion;
-	private int puntaje;
+	private double puntaje;
 	private EstadoPersonaje estado; 
 	private int vidas;
 	private double velocidadX;
+	private double ancho;
+	private double alto;
 	
 	public Personaje()
 	{
@@ -20,9 +22,11 @@ public class Personaje implements Comparable<Personaje> {
 		this.estado = new PersonajeNormal();
 		this.velocidadX = 5;
 		this.vidas = 3;
+		this.ancho = 10;
+		this.alto = 10;
 	}
 	
-	public Personaje(int x, int y)
+	public Personaje(double x, double y)
 	{
 		this.posicion = new Punto2D(x,y);
 		this.setPuntaje(0);
@@ -37,12 +41,6 @@ public class Personaje implements Comparable<Personaje> {
 	public void hit() {
 		this.vidas--;
 		estado = estado.hit(this.vidas);
-	}
-	
-	@Override
-	public int compareTo(Personaje otro) {
-		// TODO Auto-generated method stub
-		return puntaje - otro.puntaje;
 	}
 
 	/**
@@ -70,6 +68,10 @@ public class Personaje implements Comparable<Personaje> {
 		return puntaje == other.puntaje;
 	}
 
+	public double compararPuntaje(Personaje otro) {
+		// TODO Auto-generated method stub
+		return puntaje - otro.puntaje;
+	}
 
 	/**
 	 * @return the vidas
@@ -81,13 +83,17 @@ public class Personaje implements Comparable<Personaje> {
 	/**
 	 * @param puntaje the puntaje to set
 	 */
-	public void setPuntaje(int puntaje) {
+	public void setPuntaje(double puntaje) {
 		this.puntaje = puntaje;
 	}
 	
 	public void moverDerecha() {
 		this.posicion.desplazarX(velocidadX);
 	}
+	
+	public double getPuntaje(){
+        return Math.abs(this.posicion.getY());
+    }
 	
 	public void moverIzquierda() {
 		this.posicion.desplazarX(-velocidadX);

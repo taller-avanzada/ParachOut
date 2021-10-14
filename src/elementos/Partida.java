@@ -33,7 +33,7 @@ public class Partida
 		//Obtener ganadores de participantes y cargarlo en ganadores
 		for(int i = 1 ; i < participantes.size(); i++)
 		{
-			if (maxPer.compareTo(participantes.get(i)) < 0)
+			if (maxPer.compararPuntaje(participantes.get(i)) < 0)
 			{
 				maxPer = participantes.get(i);
 			}
@@ -41,7 +41,7 @@ public class Partida
 		
 		for(int i = 0 ; i < participantes.size(); i++)
 		{
-			if (maxPer.compareTo(participantes.get(i)) == 0) 
+			if (maxPer.compararPuntaje(participantes.get(i)) == 0) 
 			{
 				ganadores.add(participantes.get(i));
 			}

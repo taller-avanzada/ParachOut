@@ -13,6 +13,16 @@ public class Punto2D
 		this.y = y;
 	}
 	
+	public double getY()
+	{
+		return this.y;
+	}
+
+	public double getX()
+	{
+		return this.x;
+	}
+	
 	public void desplazarX(double dx) {
 		this.x += dx;
 	}

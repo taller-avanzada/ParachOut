@@ -11,7 +11,20 @@ public class Obstaculo
 		this.posicion = pos;
 		this.ancho = ancho;
 		this.largo = largo;
-		
 	}
-	
+
+	public Punto2D getPosicion()
+	{
+		return posicion;
+	}
+
+	public double getAncho()
+	{
+		return ancho;
+	}
+
+	public double getLargo()
+	{
+		return largo;
+	}
 }
