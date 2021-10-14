@@ -3,10 +3,10 @@ package elementos;
 public class Obstaculo
 {
 	private Punto2D posicion;
-	private int ancho;
-	private int largo;
+	private double ancho;
+	private double largo;
 	
-	public Obstaculo(Punto2D pos, int ancho, int largo)
+	public Obstaculo(Punto2D pos, double ancho, double largo)
 	{
 		this.posicion = pos;
 		this.ancho = ancho;
