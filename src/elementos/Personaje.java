@@ -106,6 +106,15 @@ public class Personaje {
 	public Punto2D getPosicion() {
 		return this.posicion;
 	}
+
+	public double getAncho() {
+		return ancho;
+	}
+
+	public double getAlto() {
+		return alto;
+	}	
+	
 }
 
 

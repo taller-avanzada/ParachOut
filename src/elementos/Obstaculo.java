@@ -27,4 +27,23 @@ public class Obstaculo
 	{
 		return largo;
 	}
+	
+	public boolean colision( Personaje personaje ) {
+		
+		if( this.posicion.getX() > personaje.getPosicion().getX() + personaje.getAncho()) {
+			return false;
+		}
+		if( this.posicion.getX() + this.ancho < personaje.getPosicion().getX()) {
+			return false;
+		}
+		if(this.posicion.getY() > personaje.getPosicion().getY() + personaje.getAlto()) {
+			return false;
+		}
+		if(this.posicion.getY() + this.largo < personaje.getPosicion().getY()) {
+			return false;
+		}
+		return true;
+		
+	}
+	
 }
