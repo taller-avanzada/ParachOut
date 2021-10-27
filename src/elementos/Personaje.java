@@ -2,6 +2,7 @@ package elementos;
 
 import java.util.Objects;
 
+import javafx.scene.shape.Rectangle;
 import state.EstadoPersonaje;
 import state.PersonajeNormal;
 
@@ -14,7 +15,9 @@ public class Personaje {
 	private double velocidadX;
 	private double ancho;
 	private double alto;
-	
+	private Rectangle rectangulo;
+	final double ALTO = 100;
+	final double ANCHO = 100;
 	public Personaje()
 	{
 		this.posicion = new Punto2D(0,0);
@@ -24,6 +27,7 @@ public class Personaje {
 		this.vidas = 3;
 		this.ancho = 10;
 		this.alto = 10;
+		this.rectangulo = new Rectangle(ANCHO,ALTO);
 	}
 	
 	public Personaje(double x, double y)
@@ -31,8 +35,15 @@ public class Personaje {
 		this.posicion = new Punto2D(x,y);
 		this.setPuntaje(0);
 		this.estado = new PersonajeNormal();
+		this.rectangulo = new Rectangle(x,y,ANCHO,ALTO);
+        this.vidas = 3;
+        this.velocidadX = 5;
 	}
 	
+	public Rectangle getRectangle()
+	{
+		return this.rectangulo;
+	}
 	public void recogerParacaidas() {
 		if (0 < vidas && vidas < 3)
 			vidas++;
@@ -86,18 +97,26 @@ public class Personaje {
 	public void setPuntaje(double puntaje) {
 		this.puntaje = puntaje;
 	}
-	
+	/*
 	public void moverDerecha() {
 		this.posicion.desplazarX(velocidadX);
-	}
+	}*/
 	
 	public double getPuntaje(){
         return Math.abs(this.posicion.getY());
     }
 	
+	public void moverDerecha() {
+        rectangulo.setTranslateX(rectangulo.getTranslateX()+velocidadX);
+    }
+
+    public void moverIzquierda() {
+        rectangulo.setTranslateX(rectangulo.getTranslateX()-velocidadX);
+    }
+	/*
 	public void moverIzquierda() {
 		this.posicion.desplazarX(-velocidadX);
-	}
+	}*/
 	
 	public void caer() {
 		this.posicion.desplazarY(estado.getVelocidadY());
@@ -108,12 +127,20 @@ public class Personaje {
 	}
 
 	public double getAncho() {
-		return ancho;
+		return ANCHO;
 	}
 
 	public double getAlto() {
-		return alto;
+		return ALTO;
 	}	
+	
+	public double getPosX() {
+        return rectangulo.getTranslateX();
+    }
+	
+	public double getPosY() {
+        return rectangulo.getTranslateY();
+    }
 	
 }
 
