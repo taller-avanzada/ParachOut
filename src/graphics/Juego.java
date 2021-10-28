@@ -111,7 +111,10 @@ public class Juego extends Application
 				player.hit();
 				label.setText("Vidas: " + player.getVidas());
 			}
+			//ARRAYLISTAELIMINAR 
 		}
+		//Eliminar del arraylistaeliminar
+		//Eliminar del arraylist comun de obstaculos
 		if (System.currentTimeMillis() - player.getLastHit() > PersonajeLento.duracion * 1000 && player.getLastHit() != 0)
 		{
 			player.reestablecerEstado();

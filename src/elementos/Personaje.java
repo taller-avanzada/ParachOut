@@ -136,7 +136,6 @@ public class Personaje {
 	}
 
 	public double compararPuntaje(Personaje otro) {
-		// TODO Auto-generated method stub
 		return puntaje - otro.puntaje;
 	}
 
@@ -153,10 +152,6 @@ public class Personaje {
 	public void setPuntaje(double puntaje) {
 		this.puntaje = puntaje;
 	}
-	/*
-	public void moverDerecha() {
-		this.posicion.desplazarX(velocidadX);
-	}*/
 	
 	public double getPuntaje(){
         return Math.abs(this.posicion.getY());
