@@ -34,7 +34,7 @@ public class Personaje {
 		this.posicion = new Punto2D(0,0);
 		this.setPuntaje(0);
 		this.estado = new PersonajeNormal();
-		this.velocidadX = 5;
+		this.velocidadX = 15;
 		this.vidas = 3;
 		this.rectangulo = new Rectangle(ANCHO,ALTO);
 		lastHit = 0;
@@ -47,7 +47,7 @@ public class Personaje {
 		this.estado = new PersonajeNormal();
 		this.rectangulo = new Rectangle(x,y,ANCHO,ALTO);
         this.vidas = 3;
-        this.velocidadX = 5;
+        this.velocidadX = 15;
         lastHit = 0;
 	}
 	

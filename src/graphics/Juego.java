@@ -25,40 +25,69 @@ import state.PersonajeLento;
 public class Juego extends Application
 {
 	private GraphicsContext graficos;
+	private GraphicsContext graficosMenu;
 	private Pane pane;
 	private Scene escena;
 	private Label label;
 	private Canvas lienzo;
+	private Canvas menuCanvas;
 	private Personaje player;
 	public HashMap<String,Image> imagenes;
 	private ArrayList<Obstaculo> obstaculos;
-	
+	private ArrayList<Obstaculo> obstaculosAEliminar;
 	@Override
 	public void start(Stage ventana) throws Exception
 	{
-		inicializarComponentes();
-		paint();
-		gestionEventos();
-		ventana.setTitle("Parachout");
-		ventana.setScene(escena);
+		cargarImagenes();
+		Pane menu = new Pane();
+		Scene sceneMenu = new Scene(menu,1280,720);
+		menuCanvas = new Canvas(1280,720);
+		ventana.setScene(sceneMenu);
+		menu.getChildren().add(menuCanvas);
+		graficosMenu = menuCanvas.getGraphicsContext2D();
+		graficosMenu.drawImage(imagenes.get("menu"),0,0);
+		sceneMenu.setOnKeyPressed(new EventHandler<KeyEvent>(){
+            @Override
+            public void handle(KeyEvent event) {
+                if(event.getCode() == KeyCode.ENTER) {
+                	pane = new Pane();
+                	escena = new Scene(pane,1280,720);
+                	inicializarComponentes();
+                	paint();
+                	gestionEventos();
+                	ventana.setTitle("Parachout");
+                	ventana.setScene(escena);
+                	ventana.show();
+                	cicloDeJuego();
+                	ventana.show();
+                }
+            }
+        });
+		
 		ventana.show();
-		cicloDeJuego();
 	}
 	
 	private void inicializarComponentes()
 	{
 		setearGraficos();
-		cargarImagenes();
 		instanciarObstaculos();
+		instanciarParacaidas();
 		instanciarJugadores();
 		label = new Label("Vidas: " + player.getVidas());
 		label.setTranslateX(1000);
 		pane.getChildren().add(label);
 	}
 	
+	private void instanciarParacaidas()
+	{
+		// PATENTE PENDIENTE
+		
+	}
+
 	private void instanciarObstaculos()
 	{
 		obstaculos = new ArrayList<Obstaculo>();
+		obstaculosAEliminar = new ArrayList<Obstaculo>();
 		Obstaculo obs1 = new Obstaculo(new Punto2D(0,500), 100, 100);
 		obs1.setGraphics();
 		obstaculos.add(obs1);
@@ -86,15 +115,16 @@ public class Juego extends Application
 		pane = new Pane();
 		escena = new Scene(pane,1280,720);
 		lienzo = new Canvas(1280,780);
-		imagenes = new HashMap<String,Image>();
 		graficos = lienzo.getGraphicsContext2D();
 		pane.getChildren().add(lienzo);
 	}
 
 	public void cargarImagenes()
 	{
-		imagenes.put("background",new Image("graphics\\fondo.png",1280,720,false,false));
+		imagenes = new HashMap<String,Image>();
+		imagenes.put("background",new Image("graphics\\background.jpg",1280,720,false,false));
 		imagenes.put("player",new Image("graphics\\player.png",1280,720,false,false));
+		imagenes.put("menu",new Image("graphics\\menu.png",1280,720,false,false));
 	}
 	
 	public void paint()
@@ -111,10 +141,13 @@ public class Juego extends Application
 				player.hit();
 				label.setText("Vidas: " + player.getVidas());
 			}
-			//ARRAYLISTAELIMINAR 
+			if (obs.getPosY() == 0 )
+			{
+				obstaculosAEliminar.add(obs);
+				pane.getChildren().remove(obs.getRectangle());
+			}
 		}
-		//Eliminar del arraylistaeliminar
-		//Eliminar del arraylist comun de obstaculos
+		obstaculos.removeAll(obstaculosAEliminar);
 		if (System.currentTimeMillis() - player.getLastHit() > PersonajeLento.duracion * 1000 && player.getLastHit() != 0)
 		{
 			player.reestablecerEstado();
@@ -167,7 +200,7 @@ public class Juego extends Application
 	
 	public static void main(String[] args)
 	{
-		launch(args); //IMPLEMENTAR MENU
+		launch(args); 
 	}
 	
 }
