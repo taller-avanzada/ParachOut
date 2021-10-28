@@ -5,7 +5,9 @@ public abstract class EstadoPersonaje {
 	
 	public EstadoPersonaje hit(int vidas) 
 	{
-		return this;
+		if (vidas > 1)
+			return new PersonajeLento();
+		else return new PersonajeMuerto();
 	}
 	
 	public double getVelocidadY() {

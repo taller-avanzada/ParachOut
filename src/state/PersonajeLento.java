@@ -3,11 +3,11 @@ package state;
 
 public class PersonajeLento extends EstadoPersonaje {
 
-	private int duracion = 10; // TODO implementar algun dia -- Y ese día llegó... 27/10
+	public final static int duracion = 5; // TODO implementar algun dia -- Y ese día llegó... 27/10
 	
 	public PersonajeLento()
 	{
-		this.velocidadY = 5;
+		this.velocidadY = 1.25;
 	}
 	
 	@Override
@@ -18,6 +18,5 @@ public class PersonajeLento extends EstadoPersonaje {
 		}
 		
 		return new PersonajeLento();
-		
 	}
 }

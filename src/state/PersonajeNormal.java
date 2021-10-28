@@ -5,7 +5,7 @@ public class PersonajeNormal extends EstadoPersonaje{
 
 	public PersonajeNormal()
 	{
-		this.velocidadY = 10;
+		this.velocidadY = 2.5;
 	}
 	
 	@Override

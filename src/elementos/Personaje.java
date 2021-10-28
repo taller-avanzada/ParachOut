@@ -1,10 +1,15 @@
 package elementos;
 
 import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
+import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import state.EstadoPersonaje;
+import state.PersonajeLento;
+import state.PersonajeMuerto;
 import state.PersonajeNormal;
 
 public class Personaje {
@@ -14,11 +19,16 @@ public class Personaje {
 	private EstadoPersonaje estado; 
 	private int vidas;
 	private double velocidadX;
-	private double ancho;
-	private double alto;
 	private Rectangle rectangulo;
 	final double ALTO = 100;
 	final double ANCHO = 100;
+	private long lastHit;
+	private Image[] imagenes_estados = {
+			new Image("graphics\\player.png",1280,720,false,false),
+			new Image("graphics\\playerhit.png",1280,720,false,false),
+			new Image("graphics\\fondo.png",1280,720,false,false)
+	};
+			
 	public Personaje()
 	{
 		this.posicion = new Punto2D(0,0);
@@ -26,9 +36,8 @@ public class Personaje {
 		this.estado = new PersonajeNormal();
 		this.velocidadX = 5;
 		this.vidas = 3;
-		this.ancho = 10;
-		this.alto = 10;
 		this.rectangulo = new Rectangle(ANCHO,ALTO);
+		lastHit = 0;
 	}
 	
 	public Personaje(double x, double y)
@@ -39,7 +48,9 @@ public class Personaje {
 		this.rectangulo = new Rectangle(x,y,ANCHO,ALTO);
         this.vidas = 3;
         this.velocidadX = 5;
+        lastHit = 0;
 	}
+	
 	
 	public Rectangle getRectangle()
 	{
@@ -51,8 +62,52 @@ public class Personaje {
 	}
 	
 	public void hit() {
-		this.vidas--;
-		estado = estado.hit(this.vidas);
+		if (puedeGolpearse())
+		{
+			vidas--;
+			estado = estado.hit(this.vidas);
+			CambiarImagenSegunEstado();
+			lastHit = System.currentTimeMillis();
+		}
+			
+	}
+	
+	private void CambiarImagenSegunEstado()
+	{
+		if (estado.getClass().equals(new PersonajeNormal().getClass()))
+		{
+			setGraphics(new ImagePattern(imagenes_estados[0]));
+		}
+		if (estado.getClass().equals(new PersonajeLento().getClass()))
+		{
+			setGraphics(new ImagePattern(imagenes_estados[1]));
+		}
+		if (estado.getClass().equals(new PersonajeMuerto().getClass()))
+		{
+			setGraphics(new ImagePattern(imagenes_estados[2]));
+		}
+	}
+
+	public long getLastHit()
+	{
+		return lastHit;
+	}
+	
+	public void reestablecerEstado()
+	{
+		if (estado.getClass().equals(new PersonajeLento().getClass()))
+		{
+			this.estado = new PersonajeNormal();
+			lastHit = 0;
+			System.out.print("Estado reestablecido");
+			setGraphics(new ImagePattern(imagenes_estados[0]));
+			
+		}
+	}
+	
+	private boolean puedeGolpearse()
+	{
+		return estado.getClass().equals(new PersonajeNormal().getClass());
 	}
 
 	/**
@@ -114,10 +169,7 @@ public class Personaje {
     public void moverIzquierda() {
         rectangulo.setTranslateX(rectangulo.getTranslateX()-velocidadX);
     }
-	/*
-	public void moverIzquierda() {
-		this.posicion.desplazarX(-velocidadX);
-	}*/
+
 	
 	public void caer() {
 		this.posicion.desplazarY(estado.getVelocidadY());
@@ -163,6 +215,11 @@ public class Personaje {
 			return false;
 			}
 			return true;
+	}
+
+	public double getVelocidadY()
+	{
+		return estado.getVelocidadY();
 	}
 }
 
