@@ -2,6 +2,7 @@ package elementos;
 
 import java.util.Objects;
 
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import state.EstadoPersonaje;
 import state.PersonajeNormal;
@@ -142,6 +143,27 @@ public class Personaje {
         return rectangulo.getTranslateY();
     }
 	
+	public void setGraphics(ImagePattern image)
+	{
+		this.rectangulo.setFill(image);
+	}
+	
+	public boolean checkColision(Obstaculo obj)
+	{
+		if ( getPosX() > obj.getPosX() + obj.getAncho() ) {
+			return false;
+			}
+			if ( getPosX()+ANCHO < obj.getPosX() ) {
+			return false;
+			}
+			if ( getPosY() > obj.getPosY()+obj.getLargo() ) {
+			return false;
+			}
+			if ( getPosY()+ALTO < obj.getPosY() ) {
+			return false;
+			}
+			return true;
+	}
 }
 
 

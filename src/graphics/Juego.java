@@ -1,15 +1,19 @@
 package graphics;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
+import elementos.Obstaculo;
 import elementos.Personaje;
+import elementos.Punto2D;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -31,6 +35,7 @@ public class Juego extends Application
 	private Rectangle rect;
 	public HashMap<String,Image> imagenes;
 	private Personaje player;
+	private ArrayList<Obstaculo> obstaculos;
 	@Override
 	public void start(Stage ventana) throws Exception
 	{
@@ -48,15 +53,27 @@ public class Juego extends Application
 		setearGraficos();
 		cargarImagenes();
 		instanciarJugadores();
+		instanciarObstaculos();
+		Label label = new Label("Vidas");
+		label.setTranslateX(1000); //SETEARLE ESTILO y añadir vidas
+		//Si hubo hit, restar
+		pane.getChildren().add(label);
 	}
 	
+	private void instanciarObstaculos()
+	{
+		obstaculos = new ArrayList<Obstaculo>();
+		Obstaculo obs1 = new Obstaculo(new Punto2D(0,500), 100, 100);
+		obs1.setGraphics();
+		obstaculos.add(obs1);
+		pane.getChildren().add(obs1.getRectangle());
+	}
+
 	private void instanciarJugadores()
 	{
 		player = new Personaje(0,0);
-		rect = player.getRectangle();
-		rect.setFill(Color.BLACK);
-		rect.setFill(new ImagePattern(imagenes.get("player")));
-		pane.getChildren().add(rect);
+		player.setGraphics(new ImagePattern(imagenes.get("player")));
+		pane.getChildren().add(player.getRectangle());
 		
 	}
 
@@ -81,12 +98,20 @@ public class Juego extends Application
 	public void paint()
 	{
 		graficos.drawImage(imagenes.get("background"),0,0);
+		//Mostrar vidas
 	}
 	
 	private void checkEstados()
 	{
-		System.out.println("Chequeando estado del personaje");
-		
+		//Por cada obstaculo, si lo puse sacar vida
+		for(Obstaculo obs : obstaculos)
+		{
+			if (player.checkColision(obs)) //Y además pasaron 10 (duracion) segundos de inmunidad
+			{
+				player.hit();
+				System.out.print("HIT!");
+			}
+		}
 	}
 	
 	public void cicloDeJuego()
@@ -98,13 +123,21 @@ public class Juego extends Application
 			public void handle(long tiempoActual) //Recibe como parametro lo que dura el frame
 			{
 				double t = (tiempoActual - tiempoInicial) / 1000000000.0;
-				System.out.println(t + " segundos");
-				paint();
+				//System.out.println(t + " segundos");
+				subirObstaculos(2.5); //Patente pendiente
 				checkEstados();
+				paint();
 			}
-			
 		};
 		animationTimer.start(); //Empieza el ciclo de juego
+	}
+	
+	private void subirObstaculos(double velocidad)
+	{
+		for(Obstaculo obs : obstaculos)
+		{
+			obs.subir(velocidad);
+		}
 	}
 	
 	public void gestionEventos()
