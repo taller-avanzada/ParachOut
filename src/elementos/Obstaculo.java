@@ -22,7 +22,7 @@ public class Obstaculo
 	
 	public void subir(double cant)
 	{
-		this.rectangulo.setTranslateY(rectangulo.getTranslateY() -cant);
+		this.rectangulo.setTranslateY(rectangulo.getTranslateY() - cant);
 	}
 
 	public Punto2D getPosicion()

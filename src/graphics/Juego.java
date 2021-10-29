@@ -3,8 +3,12 @@ package graphics;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Random;
 
 import elementos.Obstaculo;
+import elementos.Paracaidas;
+import elementos.Partida;
 import elementos.Personaje;
 import elementos.Punto2D;
 import javafx.animation.AnimationTimer;
@@ -34,7 +38,8 @@ public class Juego extends Application
 	private Personaje player;
 	public HashMap<String,Image> imagenes;
 	private ArrayList<Obstaculo> obstaculos;
-	private ArrayList<Obstaculo> obstaculosAEliminar;
+	private ArrayList<Paracaidas> paracaidas;
+	//private ArrayList<Obstaculo> obstaculosAEliminar;
 	@Override
 	public void start(Stage ventana) throws Exception
 	{
@@ -70,8 +75,8 @@ public class Juego extends Application
 	private void inicializarComponentes()
 	{
 		setearGraficos();
-		instanciarObstaculos();
 		instanciarParacaidas();
+		instanciarObstaculos();
 		instanciarJugadores();
 		label = new Label("Vidas: " + player.getVidas());
 		label.setTranslateX(1000);
@@ -80,26 +85,75 @@ public class Juego extends Application
 	
 	private void instanciarParacaidas()
 	{
-		// PATENTE PENDIENTE
+		paracaidas = new ArrayList<Paracaidas>();
+		int posY = 200;
+		Random r = new Random();
 		
+		for (int i = 0; i < 10; i++)
+		{
+			Paracaidas par = new Paracaidas(new Punto2D(r.nextInt(1180),posY+=5000), 50, 100);
+			par.setGraphics();
+			paracaidas.add(par);
+			pane.getChildren().add(par.getRectangle());
+		}
 	}
 
 	private void instanciarObstaculos()
 	{
 		obstaculos = new ArrayList<Obstaculo>();
-		obstaculosAEliminar = new ArrayList<Obstaculo>();
-		Obstaculo obs1 = new Obstaculo(new Punto2D(0,500), 100, 100);
-		obs1.setGraphics();
-		obstaculos.add(obs1);
-		Obstaculo obs2 = new Obstaculo(new Punto2D(0,2000), 100, 100);
-		obs2.setGraphics();
-		obstaculos.add(obs2);
-		Obstaculo obs3 = new Obstaculo(new Punto2D(0,3000), 100, 100);
-		obs3.setGraphics();
-		obstaculos.add(obs3);
-		pane.getChildren().add(obs1.getRectangle());
-		pane.getChildren().add(obs2.getRectangle());
-		pane.getChildren().add(obs3.getRectangle());
+		//obstaculosAEliminar = new ArrayList<Obstaculo>();
+		int posY = 720;
+		Random r = new Random();
+		int primerRandom, segundoRandom, tercerRandom;
+		/*
+		 * la idea de guardar el primer random es hacer que siempre queden a al menos 500 de distancia
+		 * entre ellos para evitar obstaculos muy cercanos
+		 */
+		
+		for (int i = 0; i < 250; i++)
+		{
+			if(i%9 == 0)//cada 9 obstaculos genero este obstaculo particular
+			{
+				primerRandom = r.nextInt(1180);
+				segundoRandom = r.nextInt(100) + 50;
+				Obstaculo obs1 = new Obstaculo(new Punto2D(0,posY+=300), primerRandom, segundoRandom);
+				obs1.setGraphics();
+				obstaculos.add(obs1);
+				pane.getChildren().add(obs1.getRectangle());
+				
+				Obstaculo obs2 = new Obstaculo(new Punto2D(primerRandom + 250,posY), 1280 - primerRandom - 150, segundoRandom);
+				obs2.setGraphics();
+				obstaculos.add(obs2);
+				pane.getChildren().add(obs2.getRectangle());
+			}
+			else
+			{
+				primerRandom = r.nextInt(1180);
+				Obstaculo obs1 = new Obstaculo(new Punto2D(primerRandom,posY+=200), r.nextInt(100)+50, r.nextInt(100)+50);
+				obs1.setGraphics();
+				obstaculos.add(obs1);
+				pane.getChildren().add(obs1.getRectangle());
+				do
+				{
+					segundoRandom = r.nextInt(1180);
+				}while(Math.abs(segundoRandom - primerRandom) < 500);
+				
+				Obstaculo obs2 = new Obstaculo(new Punto2D(segundoRandom,posY), r.nextInt(100)+50, r.nextInt(100)+50);
+				obs2.setGraphics();
+				obstaculos.add(obs2);
+				pane.getChildren().add(obs2.getRectangle());
+				
+				do
+				{
+					tercerRandom = r.nextInt(1180);
+				}while(Math.abs(tercerRandom - segundoRandom) < 250 && Math.abs(tercerRandom - primerRandom) < 250);
+				
+				Obstaculo obs3 = new Obstaculo(new Punto2D(tercerRandom,posY), r.nextInt(100)+50, r.nextInt(100)+50);
+				obs3.setGraphics();
+				obstaculos.add(obs3);
+				pane.getChildren().add(obs3.getRectangle());
+			}
+		}
 	}
 
 	private void instanciarJugadores()
@@ -134,23 +188,37 @@ public class Juego extends Application
 	
 	private void checkEstados()
 	{
-		for(Obstaculo obs : obstaculos)
+		for(int i = 0; i < 3; i++)
 		{
-			if (player.checkColision(obs)) 
+			if (player.checkColisionObstaculo(obstaculos.get(i))) 
 			{
-				player.hit();
+				player.hit(player.getVelocidadY());
 				label.setText("Vidas: " + player.getVidas());
 			}
-			if (obs.getPosY() == 0 )
+			if (obstaculos.get(i).getPosY() < -obstaculos.get(i).getLargo() )
 			{
-				obstaculosAEliminar.add(obs);
-				pane.getChildren().remove(obs.getRectangle());
+				if(obstaculos.size() > 3)
+				{
+					pane.getChildren().remove(obstaculos.get(i).getRectangle());
+					obstaculos.remove(i);									
+				}
 			}
 		}
-		obstaculos.removeAll(obstaculosAEliminar);
+		if (!paracaidas.isEmpty() && player.puedeRecoger() && player.checkColisionParacaidas(paracaidas.get(0)))
+		{
+			player.recogerParacaidas();
+			label.setText("Vidas: " + player.getVidas());
+			pane.getChildren().remove(paracaidas.get(0).getRectangle());
+			paracaidas.remove(0); 
+		}
+		if (!paracaidas.isEmpty() && paracaidas.get(0).getPosY() < -paracaidas.get(0).getLargo() )
+		{
+			pane.getChildren().remove(paracaidas.get(0).getRectangle());
+			paracaidas.remove(0); 
+		}
 		if (System.currentTimeMillis() - player.getLastHit() > PersonajeLento.duracion * 1000 && player.getLastHit() != 0)
 		{
-			player.reestablecerEstado();
+			player.reestablecerEstado(player.getVelocidadY());
 		}
 	}
 	
@@ -161,9 +229,12 @@ public class Juego extends Application
 			//Este método se ejecuta 60 veces por segundo
 			public void handle(long tiempoActual) //Recibe como parametro lo que dura el frame
 			{
+				System.out.println(player.getVelocidadY());
 				subirObstaculos(player.getVelocidadY());
+				subirParacaidas(player.getVelocidadY());
 				//Cargar meta al mismo tiempo que los obstaculos
 				checkEstados();
+				player.getEstado().acelerar();
 				paint();
 			}
 		};
@@ -175,6 +246,14 @@ public class Juego extends Application
 		for(Obstaculo obs : obstaculos)
 		{
 			obs.subir(velocidad);
+		}
+	}
+	
+	private void subirParacaidas(double velocidad)
+	{
+		for(Paracaidas par : paracaidas)
+		{
+			par.subir(velocidad);
 		}
 	}
 	

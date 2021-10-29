@@ -36,7 +36,7 @@ public class testMovimiento {
 	@Test
 	public void testCaidaLenta() {		
 		
-		personaje.hit(); //reduce velocidad a 5
+		personaje.hit(personaje.getVelocidadY()); //reduce velocidad a 5
 		
 		
 		for ( int i = 0 ; i < 100 ; i++ ) {

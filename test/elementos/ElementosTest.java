@@ -79,7 +79,7 @@ public class ElementosTest {
 	@Test
 	public void lentoFunciona() {
 		Personaje personaje = new Personaje();
-		personaje.hit();
+		personaje.hit(personaje.getVelocidadY());
 		
 		personaje.moverDerecha();
 		personaje.caer();

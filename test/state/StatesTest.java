@@ -12,7 +12,7 @@ public class StatesTest {
 	@Test
 	public void deNormalALento() {
 		Personaje p = new Personaje(0,0);
-		p.hit();
+		p.hit(p.getVelocidadY());
 		assertTrue(p.getEstado() instanceof PersonajeLento);
 	}
 	
@@ -20,9 +20,9 @@ public class StatesTest {
 	public void deNormalAMuerto() {
 		Personaje p = new Personaje(0,0);
 
-		p.hit();
-		p.hit();
-		p.hit();
+		p.hit(p.getVelocidadY());
+		p.hit(p.getVelocidadY());
+		p.hit(p.getVelocidadY());
 		
 		assertTrue(p.getEstado() instanceof PersonajeMuerto);
 	}
@@ -31,9 +31,9 @@ public class StatesTest {
 	public void deMuertoNoSale() {
 		Personaje p = new Personaje(0,0);
 
-		p.hit();
-		p.hit();
-		p.hit();
+		p.hit(p.getVelocidadY());
+		p.hit(p.getVelocidadY());
+		p.hit(p.getVelocidadY());
 		// aca ya esta muerto
 		
 		p.recogerParacaidas();
@@ -46,7 +46,7 @@ public class StatesTest {
 	public void noPasarseDe3Vidas() {
 		Personaje p = new Personaje(0,0);
 		p.recogerParacaidas();
-		p.hit();
+		p.hit(p.getVelocidadY());
 		p.recogerParacaidas();
 		p.recogerParacaidas();
 		p.recogerParacaidas();
@@ -59,9 +59,9 @@ public class StatesTest {
 	@Test
 	public void noBajarDe0Vidas() {
 		Personaje p = new Personaje(0,0);
-		p.hit();
-		p.hit();
-		p.hit();
+		p.hit(p.getVelocidadY());
+		p.hit(p.getVelocidadY());
+		p.hit(p.getVelocidadY());
 		p.recogerParacaidas();
 		p.recogerParacaidas();
 		

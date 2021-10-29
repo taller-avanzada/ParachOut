@@ -5,18 +5,18 @@ public class PersonajeLento extends EstadoPersonaje {
 
 	public final static int duracion = 5; // TODO implementar algun dia -- Y ese día llegó... 27/10
 	
-	public PersonajeLento()
+	public PersonajeLento(double velocidadY)
 	{
-		this.velocidadY = 1.25;
+		this.velocidadY = velocidadY/2;
 	}
 	
 	@Override
-	public EstadoPersonaje hit(int vidas) {
+	public EstadoPersonaje hit(int vidas, double velocidadY) {
 		
 		if (vidas < 1) {
 			return new PersonajeMuerto();
 		}
 		
-		return new PersonajeLento();
+		return new PersonajeLento(velocidadY);
 	}
 }

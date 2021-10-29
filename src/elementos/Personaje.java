@@ -23,6 +23,7 @@ public class Personaje {
 	final double ALTO = 100;
 	final double ANCHO = 100;
 	private long lastHit;
+	private long lastParacaidas;
 	private Image[] imagenes_estados = {
 			new Image("graphics\\player.png",1280,720,false,false),
 			new Image("graphics\\playerhit.png",1280,720,false,false),
@@ -58,27 +59,30 @@ public class Personaje {
 	}
 	public void recogerParacaidas() {
 		if (0 < vidas && vidas < 3)
+		{
 			vidas++;
+			lastParacaidas = System.currentTimeMillis();
+		}
 	}
 	
-	public void hit() {
+	public void hit(double velocidadY) {
 		if (puedeGolpearse())
 		{
 			vidas--;
-			estado = estado.hit(this.vidas);
-			CambiarImagenSegunEstado();
+			estado = estado.hit(this.vidas, velocidadY);
+			CambiarImagenSegunEstado(velocidadY);
 			lastHit = System.currentTimeMillis();
 		}
 			
 	}
 	
-	private void CambiarImagenSegunEstado()
+	private void CambiarImagenSegunEstado(double velocidadY)
 	{
-		if (estado.getClass().equals(new PersonajeNormal().getClass()))
+		if (estado.getClass().equals(new PersonajeNormal(velocidadY).getClass()))
 		{
 			setGraphics(new ImagePattern(imagenes_estados[0]));
 		}
-		if (estado.getClass().equals(new PersonajeLento().getClass()))
+		if (estado.getClass().equals(new PersonajeLento(velocidadY).getClass()))
 		{
 			setGraphics(new ImagePattern(imagenes_estados[1]));
 		}
@@ -93,11 +97,16 @@ public class Personaje {
 		return lastHit;
 	}
 	
-	public void reestablecerEstado()
+	public long getLastParacaidas()
 	{
-		if (estado.getClass().equals(new PersonajeLento().getClass()))
+		return lastParacaidas;
+	}
+	
+	public void reestablecerEstado(double velocidadY)
+	{
+		if (estado.getClass().equals(new PersonajeLento(velocidadY).getClass()))
 		{
-			this.estado = new PersonajeNormal();
+			this.estado = new PersonajeNormal(velocidadY);
 			lastHit = 0;
 			System.out.print("Estado reestablecido");
 			setGraphics(new ImagePattern(imagenes_estados[0]));
@@ -195,7 +204,7 @@ public class Personaje {
 		this.rectangulo.setFill(image);
 	}
 	
-	public boolean checkColision(Obstaculo obj)
+	public boolean checkColisionObstaculo(Obstaculo obj)
 	{
 		if ( getPosX() > obj.getPosX() + obj.getAncho() ) {
 			return false;
@@ -211,10 +220,32 @@ public class Personaje {
 			}
 			return true;
 	}
+	
+	public boolean checkColisionParacaidas(Paracaidas par)
+	{
+		if ( getPosX() > par.getPosX() + par.getAncho() ) {
+			return false;
+		}
+		if ( getPosX()+ANCHO < par.getPosX() ) {
+			return false;
+		}
+		if ( getPosY() > par.getPosY()+par.getLargo() ) {
+			return false;
+		}
+		if ( getPosY()+ALTO < par.getPosY() ) {
+			return false;
+		}
+		return true;
+	}
 
 	public double getVelocidadY()
 	{
 		return estado.getVelocidadY();
+	}
+	
+	public boolean puedeRecoger()
+	{
+		return System.currentTimeMillis() - lastParacaidas > 2000 && vidas < 3 ? true : false;
 	}
 }
 
