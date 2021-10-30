@@ -1,10 +1,13 @@
 package elementos;
 
+import java.io.File;
 import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import javafx.scene.image.Image;
+import javafx.scene.media.AudioClip;
+import javafx.scene.media.Media;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import state.EstadoPersonaje;
@@ -21,15 +24,20 @@ public class Personaje {
 	private double velocidadX;
 	private Rectangle rectangulo;
 	final double ALTO = 100;
-	final double ANCHO = 100;
+	final double ANCHO = 65;
 	private long lastHit;
 	private long lastParacaidas;
 	private Image[] imagenes_estados = {
 			new Image("graphics\\player.png",1280,720,false,false),
 			new Image("graphics\\playerhit.png",1280,720,false,false),
-			new Image("graphics\\fondo.png",1280,720,false,false)
+			new Image("graphics\\playerdead.png",1280,720,false,false)
 	};
-			
+	private String username;
+		
+	private String[] pathSonidos = {
+			"hit","hp"
+	};
+	
 	public Personaje()
 	{
 		this.posicion = new Punto2D(0,0);
@@ -60,6 +68,9 @@ public class Personaje {
 	public void recogerParacaidas() {
 		if (0 < vidas && vidas < 3)
 		{
+			Media media = new Media(new File("bin\\music\\hp.mp3").toURI().toString());
+	        AudioClip audio  = new AudioClip(media.getSource());
+	        audio.play();
 			vidas++;
 			lastParacaidas = System.currentTimeMillis();
 		}
@@ -68,6 +79,9 @@ public class Personaje {
 	public void hit(double velocidadY) {
 		if (puedeGolpearse())
 		{
+			Media media = new Media(new File("bin\\music\\hit.mp3").toURI().toString());
+	        AudioClip audio  = new AudioClip(media.getSource());
+	        audio.play();
 			vidas--;
 			estado = estado.hit(this.vidas, velocidadY);
 			CambiarImagenSegunEstado(velocidadY);
@@ -108,7 +122,6 @@ public class Personaje {
 		{
 			this.estado = new PersonajeNormal(velocidadY);
 			lastHit = 0;
-			System.out.print("Estado reestablecido");
 			setGraphics(new ImagePattern(imagenes_estados[0]));
 			
 		}
@@ -163,15 +176,21 @@ public class Personaje {
 	}
 	
 	public double getPuntaje(){
-        return Math.abs(this.posicion.getY());
+        return puntaje;
     }
 	
 	public void moverDerecha() {
-        rectangulo.setTranslateX(rectangulo.getTranslateX()+velocidadX);
+		if (getPosX() + getAncho() > 1280)
+			rectangulo.setTranslateX(-65);
+		else
+			rectangulo.setTranslateX(rectangulo.getTranslateX()+velocidadX);
     }
 
     public void moverIzquierda() {
-        rectangulo.setTranslateX(rectangulo.getTranslateX()-velocidadX);
+    	if (getPosX() < 0)
+    		rectangulo.setTranslateX(1280);
+    	else
+    		rectangulo.setTranslateX(rectangulo.getTranslateX()-velocidadX);
     }
 
 	
@@ -246,6 +265,25 @@ public class Personaje {
 	public boolean puedeRecoger()
 	{
 		return System.currentTimeMillis() - lastParacaidas > 2000 && vidas < 3 ? true : false;
+	}
+
+	public void setName(String text)
+	{
+		this.username = text;
+	}
+	
+	public String getName()
+	{
+		return username;
+	}
+	
+	public boolean estaMuerto() {
+        return estado.getClass().equals(new PersonajeMuerto().getClass());
+    }
+
+	public void subirPuntaje(double amount)
+	{
+		this.puntaje = this.puntaje + amount;
 	}
 }
 

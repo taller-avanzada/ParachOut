@@ -1,6 +1,7 @@
 package elementos;
 
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 
 public class Paracaidas 
@@ -58,9 +59,9 @@ public class Paracaidas
 		
 	}
 
-	public void setGraphics()
+	public void setGraphics(ImagePattern image)
 	{
-		this.rectangulo.setFill(Color.BLUE);
+		this.rectangulo.setFill(image);
 	}
 
 	public Rectangle getRectangle()

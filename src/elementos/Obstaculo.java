@@ -1,6 +1,7 @@
 package elementos;
 
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 
 public class Obstaculo
@@ -58,9 +59,9 @@ public class Obstaculo
 		
 	}
 
-	public void setGraphics()
+	public void setGraphics(ImagePattern image)
 	{
-		this.rectangulo.setFill(Color.RED);
+		this.rectangulo.setFill(image);
 	}
 
 	public Rectangle getRectangle()
